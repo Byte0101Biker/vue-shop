@@ -57,7 +57,7 @@
       total: cart.totalPrice,
     };
   
-    await axios.post("http://localhost:3000/api/order", order);
+    await axios.post("https://vue-shop-u098.onrender.com/api/order", order);
     message.value = "🎉 Zamówienie zostało złożone! Dziękujemy!";
     cart.clearCart();
     name.value = email.value = address.value = "";
