@@ -11,7 +11,7 @@
   const about = ref("");
   
   onMounted(async () => {
-    const res = await axios.get("http://localhost:3000/api/settings");
+    const res = await axios.get("https://vue-shop-u098.onrender.comapi/settings");
     about.value = res.data.pages.about;
   });
   </script>
