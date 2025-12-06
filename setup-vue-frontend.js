@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
  * Skrypt tworzy kompletną strukturę projektu Vue 3 z Pinia, Router i Axios
- * Autor: ChatGPT dla Jakuba 😊
  */
 
 import { execSync } from "child_process";
