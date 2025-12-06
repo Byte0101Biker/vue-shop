@@ -20,7 +20,7 @@ const message = ref("");
 
 async function register() {
   try {
-    const res = await axios.post("http://localhost:3000/api/register", {
+    const res = await axios.post("https://vue-shop-u098.onrender.com/api/register", {
       email: email.value,
       password: password.value,
     });
