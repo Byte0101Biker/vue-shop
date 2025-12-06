@@ -160,7 +160,7 @@
   // 💾 Zapis ustawień
   async function save() {
     try {
-      await axios.post("http://localhost:3000/api/settings", settings.value);
+      await axios.post("https://vue-shop-u098.onrender.com/api/settings", settings.value);
       message.value = "✅ Zapisano pomyślnie!";
       setTimeout(() => (message.value = ""), 3000);
     } catch (err) {
