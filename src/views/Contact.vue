@@ -11,7 +11,7 @@
   const contact = ref("");
   
   onMounted(async () => {
-    const res = await axios.get("http://localhost:3000/api/settings");
+    const res = await axios.get("https://vue-shop-u098.onrender.com/api/settings");
     contact.value = res.data.pages.contact;
   });
   </script>
