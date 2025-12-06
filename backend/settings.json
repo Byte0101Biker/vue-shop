@@ -1,0 +1,32 @@
+{
+  "title": "Vue Shop 🛍️",
+  "subtitle": "Najlepsze produkty w najlepszych cenach",
+  "theme": {
+    "bannerColor": "#450e59",
+    "accentColor": "#0056d6",
+    "textColor": "#ffffff",
+    "backgroundColor": "#f5f5f5",
+    "fontFamily": "'Lato', sans-serif",
+    "fontSize": "16px"
+  },
+  "pages": {
+    "about": "Jesteśmy małą firmą z pasją do tworzenia świetnych produktów.",
+    "contact": "Skontaktuj się z nami: sklep@vueshop.local, tel. 123 456 789"
+  },
+  "products": [
+    {
+      "id": 1,
+      "name": "Koszulka Vue",
+      "price": 89,
+      "image": "",
+      "description": "Koszulka z logo Vue.js"
+    },
+    {
+      "id": 2,
+      "name": "Kubek z logo",
+      "price": 39,
+      "image": "",
+      "description": "Porcelanowy kubek z logo Vue"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Jakub Powszuk",
+    "email": "j.powszuk@gmail.com",
+    "address": "test adres",
+    "items": [
+      {
+        "id": 1,
+        "name": "Koszulka Vue",
+        "price": 89,
+        "image": "",
+        "color": "#444444",
+        "qty": 1
+      },
+      {
+        "id": 2,
+        "name": "Kubek z logo",
+        "price": 39,
+        "image": "",
+        "color": "#444444",
+        "qty": 1
+      }
+    ],
+    "total": 128,
+    "id": 1761473962768,
+    "date": "26.10.2025, 11:19:22"
+  }
+]
