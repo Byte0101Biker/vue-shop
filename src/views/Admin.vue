@@ -176,7 +176,7 @@
     const formData = new FormData();
     formData.append("file", file);
   
-    const res = await axios.post("http://localhost:3000/api/upload/logo", formData, {
+    const res = await axios.post("https://vue-shop-u098.onrender.comapi/upload/logo", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   
@@ -192,7 +192,7 @@
     const formData = new FormData();
     formData.append("file", file);
   
-    const res = await axios.post(`http://localhost:3000/api/upload/product/${id}`, formData, {
+    const res = await axios.post(`https://vue-shop-u098.onrender.comapi/upload/product/${id}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   
