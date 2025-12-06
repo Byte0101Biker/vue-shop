@@ -43,13 +43,13 @@
   const orders = ref([]);
   
   onMounted(async () => {
-    const res = await axios.get("http://localhost:3000/api/orders");
+    const res = await axios.get("https://vue-shop-u098.onrender.com/api/orders");
     orders.value = res.data;
   });
   
   async function remove(id) {
     if (confirm("Czy na pewno chcesz usunąć to zamówienie?")) {
-      await axios.delete(`http://localhost:3000/api/orders/${id}`);
+      await axios.delete(`https://vue-shop-u098.onrender.com/api/orders/${id}`);
       orders.value = orders.value.filter((o) => o.id !== id);
     }
   }
