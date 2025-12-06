@@ -39,7 +39,7 @@
   
   onMounted(async () => {
     if (user.value?.email) {
-      const res = await axios.get(`http://localhost:3000/api/orders/user/${user.value.email}`);
+      const res = await axios.get(`https://vue-shop-u098.onrender.com/api/orders/user/${user.value.email}`);
       orders.value = res.data;
     }
   });
