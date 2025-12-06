@@ -1,31 +1,37 @@
 import express from "express";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import cors from "cors";
 import bodyParser from "body-parser";
 import multer from "multer";
 
 const app = express();
-const PORT = process.env.PORT || 1000;
+const PORT = process.env.PORT || 10000;
 
-// Absolutne ścieżki do plików i folderów
-const BASE_DIR = path.resolve("backend");
+// __dirname w ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// 📁 Bazowy katalog backendu (tam gdzie jest server.js i *.json)
+const BASE_DIR = __dirname;
+
 const USERS_FILE = path.join(BASE_DIR, "users.json");
 const SETTINGS_FILE = path.join(BASE_DIR, "settings.json");
 const ORDERS_FILE = path.join(BASE_DIR, "orders.json");
 const UPLOADS_DIR = path.join(BASE_DIR, "uploads");
 
-// Middleware
+// 🧩 Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/uploads", express.static(UPLOADS_DIR));
 
-// Upewnij się, że folder uploads istnieje
+// 📦 Upewnij się, że folder uploads istnieje
 if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
-// Konfiguracja uploadu plików
+// 📤 Konfiguracja uploadu plików
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOADS_DIR),
   filename: (req, file, cb) =>
@@ -33,7 +39,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Tworzenie plików startowych
+// 🧱 Tworzenie plików startowych
 function ensureFile(file, defaultValue) {
   if (!fs.existsSync(file)) {
     fs.writeFileSync(file, JSON.stringify(defaultValue, null, 2));
@@ -61,9 +67,9 @@ ensureFile(
 
 ensureFile(ORDERS_FILE, []);
 
-// API
+// ===================== API ===================== //
 
-// Dodanie zamówienia
+// 🧾 Dodanie nowego zamówienia
 app.post("/api/order", (req, res) => {
   try {
     const order = req.body;
@@ -73,12 +79,24 @@ app.post("/api/order", (req, res) => {
     orders.push(order);
     fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2));
     res.json({ message: "✅ Zamówienie zapisane!" });
-  } catch {
+  } catch (err) {
+    console.error("Błąd zapisu zamówienia:", err);
     res.status(500).json({ message: "❌ Błąd zapisu zamówienia" });
   }
 });
 
-// Logowanie
+// 📜 Pobranie wszystkich zamówień (ADMIN)
+app.get("/api/orders", (req, res) => {
+  try {
+    const orders = JSON.parse(fs.readFileSync(ORDERS_FILE, "utf8"));
+    res.json(orders);
+  } catch (err) {
+    console.error("Błąd odczytu zamówień:", err);
+    res.status(500).json({ message: "❌ Błąd odczytu zamówień" });
+  }
+});
+
+// 🔐 Logowanie użytkownika
 app.post("/api/login", (req, res) => {
   try {
     const { email, password } = req.body;
@@ -86,54 +104,67 @@ app.post("/api/login", (req, res) => {
     const user = users.find(
       (u) => u.email === email && u.password === password
     );
-    if (!user) return res.status(401).json({ message: "Błędne dane logowania" });
+    if (!user) {
+      return res.status(401).json({ message: "Błędne dane logowania" });
+    }
     res.json({ message: "OK", user });
-  } catch {
+  } catch (err) {
+    console.error("Błąd logowania:", err);
     res.status(500).json({ message: "❌ Błąd logowania" });
   }
 });
 
-// Pobranie ustawień
+// 📦 Dane sklepu (ustawienia)
 app.get("/api/settings", (req, res) => {
   try {
     const data = JSON.parse(fs.readFileSync(SETTINGS_FILE, "utf8"));
     res.json(data);
-  } catch {
-    res.status(500).json({ message: "❌ Błąd ustawień" });
+  } catch (err) {
+    console.error("Błąd odczytu ustawień:", err);
+    res.status(500).json({ message: "❌ Błąd odczytu ustawień" });
   }
 });
 
-// Zapis ustawień
+// 💾 Zapis ustawień (dla admina)
 app.post("/api/settings", (req, res) => {
   try {
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify(req.body, null, 2));
-    res.json({ message: "Zapisano" });
-  } catch {
-    res.status(500).json({ message: "❌ Błąd zapisu" });
+    res.json({ message: "✅ Zapisano zmiany!" });
+  } catch (err) {
+    console.error("Błąd zapisu ustawień:", err);
+    res.status(500).json({ message: "❌ Błąd zapisu ustawień" });
   }
 });
 
-// Upload zdjęć
+// 📸 Upload zdjęć produktów
 app.post("/api/upload", upload.single("file"), (req, res) => {
-  if (!req.file)
+  if (!req.file) {
     return res.status(400).json({ message: "Brak pliku" });
+  }
 
   const url = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
   res.json({ url });
 });
 
-// Zamówienia użytkownika
+// 📜 Zamówienia konkretnego użytkownika
 app.get("/api/orders/user/:email", (req, res) => {
   try {
-    const email = req.params.email.toLowerCase();
+    const email = (req.params.email || "").toLowerCase();
+    if (!email) {
+      return res.status(400).json({ message: "Brak adresu e-mail" });
+    }
     const orders = JSON.parse(fs.readFileSync(ORDERS_FILE, "utf8"));
-    res.json(orders.filter((o) => o.email?.toLowerCase() === email));
-  } catch {
-    res.status(500).json({ message: "❌ Błąd pobierania zamówień" });
+    const userOrders = orders.filter(
+      (o) => (o.email || "").toLowerCase() === email
+    );
+    res.json(userOrders);
+  } catch (err) {
+    console.error("Błąd odczytu zamówień użytkownika:", err);
+    res.status(500).json({ message: "❌ Błąd odczytu zamówień użytkownika" });
   }
 });
 
-// Start serwera
-app.listen(PORT, () =>
-  console.log(`Backend działa na porcie ${PORT}`)
-);
+// 🏁 Start serwera
+app.listen(PORT, () => {
+  console.log(`✅ Backend działa na porcie ${PORT}`);
+});
