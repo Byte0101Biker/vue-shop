@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 1000;
 
 // Absolutne ścieżki do plików i folderów
-const BASE_DIR = path.join(process.cwd(), "backend");
+const BASE_DIR = path.resolve("backend");
 const USERS_FILE = path.join(BASE_DIR, "users.json");
 const SETTINGS_FILE = path.join(BASE_DIR, "settings.json");
 const ORDERS_FILE = path.join(BASE_DIR, "orders.json");
