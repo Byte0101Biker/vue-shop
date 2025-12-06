@@ -24,7 +24,7 @@ const router = useRouter();
 
 async function login() {
   try {
-    const res = await axios.post("http://localhost:3000/api/login", {
+    const res = await axios.post("https://vue-shop-u098.onrender.com/api/login", {
       email: email.value,
       password: password.value,
     });
