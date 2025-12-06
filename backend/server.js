@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import multer from "multer";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 1000;
 
 // Absolutne ścieżki do plików i folderów
 const BASE_DIR = path.resolve("./backend");
