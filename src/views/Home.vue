@@ -61,7 +61,7 @@ function addToCart(product) {
 // 🔄 Wczytaj ustawienia
 onMounted(async () => {
   try {
-    const res = await axios.get("http://localhost:3000/api/settings");
+    const res = await axios.get("https://vue-shop-u098.onrender.com/api/settings");
     settings.value = res.data;
     applyTheme();
   } catch (err) {
