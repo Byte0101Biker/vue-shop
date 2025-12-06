@@ -24,7 +24,7 @@
   
   onMounted(async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/users");
+      const res = await axios.get("https://vue-shop-u098.onrender.com/api/users");
       users.value = res.data;
     } catch (err) {
       error.value = "❌ Błąd przy pobieraniu użytkowników";
