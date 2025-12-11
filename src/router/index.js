@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+
 import Home from "../views/Home.vue";
 import About from "../views/About.vue";
 import Contact from "../views/Contact.vue";
@@ -7,7 +8,6 @@ import Admin from "../views/Admin.vue";
 import Cart from "../views/Cart.vue";
 import AdminOrders from "../views/AdminOrders.vue";
 import MyOrders from "../views/MyOrders.vue";
-
 
 const routes = [
   { path: "/", component: Home },
@@ -21,7 +21,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  // 👇 NAJWAŻNIEJSZA ZMIANA
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
