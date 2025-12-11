@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 10000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 📁 Bazowy katalog backendu (tam gdzie jest server.js i *.json)
+// 📁 Bazowy katalog backendu
 const BASE_DIR = __dirname;
 
 const USERS_FILE = path.join(BASE_DIR, "users.json");
@@ -21,17 +21,17 @@ const SETTINGS_FILE = path.join(BASE_DIR, "settings.json");
 const ORDERS_FILE = path.join(BASE_DIR, "orders.json");
 const UPLOADS_DIR = path.join(BASE_DIR, "uploads");
 
-// 🧩 Middleware
+//  Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/uploads", express.static(UPLOADS_DIR));
 
-// 📦 Upewnij się, że folder uploads istnieje
+//  Upewnij się, że folder uploads istnieje
 if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
-// 📤 Konfiguracja uploadu plików
+//  Konfiguracja uploadu plików
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOADS_DIR),
   filename: (req, file, cb) =>
@@ -39,17 +39,19 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// 🧱 Tworzenie plików startowych
+//  Tworzenie plików startowych
 function ensureFile(file, defaultValue) {
   if (!fs.existsSync(file)) {
     fs.writeFileSync(file, JSON.stringify(defaultValue, null, 2));
   }
 }
 
+//  Użytkownicy
 ensureFile(USERS_FILE, [
   { email: "admin@local", password: "admin123", role: "admin" },
 ]);
 
+//  Ustawienia sklepu
 ensureFile(
   SETTINGS_FILE,
   {
@@ -69,7 +71,7 @@ ensureFile(ORDERS_FILE, []);
 
 // ===================== API ===================== //
 
-// 🧾 Dodanie nowego zamówienia
+//  Dodanie nowego zamówienia
 app.post("/api/order", (req, res) => {
   try {
     const order = req.body;
@@ -85,7 +87,7 @@ app.post("/api/order", (req, res) => {
   }
 });
 
-// 📜 Pobranie wszystkich zamówień (ADMIN)
+//  Pobranie wszystkich zamówień (ADMIN)
 app.get("/api/orders", (req, res) => {
   try {
     const orders = JSON.parse(fs.readFileSync(ORDERS_FILE, "utf8"));
@@ -96,7 +98,7 @@ app.get("/api/orders", (req, res) => {
   }
 });
 
-// 🔐 Logowanie użytkownika
+//  Logowanie użytkownika
 app.post("/api/login", (req, res) => {
   try {
     const { email, password } = req.body;
@@ -114,7 +116,7 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-// 📦 Dane sklepu (ustawienia)
+//  Dane sklepu (ustawienia)
 app.get("/api/settings", (req, res) => {
   try {
     const data = JSON.parse(fs.readFileSync(SETTINGS_FILE, "utf8"));
@@ -125,7 +127,7 @@ app.get("/api/settings", (req, res) => {
   }
 });
 
-// 💾 Zapis ustawień (dla admina)
+//  Zapis ustawień (dla Admina)
 app.post("/api/settings", (req, res) => {
   try {
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify(req.body, null, 2));
@@ -136,7 +138,7 @@ app.post("/api/settings", (req, res) => {
   }
 });
 
-// 📸 Upload zdjęć produktów
+//  Upload zdjęcia produktu
 app.post("/api/upload", upload.single("file"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "Brak pliku" });
@@ -146,7 +148,7 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
   res.json({ url });
 });
 
-// 📜 Zamówienia konkretnego użytkownika
+//  Zamówienia konkretnego użytkownika
 app.get("/api/orders/user/:email", (req, res) => {
   try {
     const email = (req.params.email || "").toLowerCase();
@@ -162,6 +164,11 @@ app.get("/api/orders/user/:email", (req, res) => {
     console.error("Błąd odczytu zamówień użytkownika:", err);
     res.status(500).json({ message: "❌ Błąd odczytu zamówień użytkownika" });
   }
+});
+
+//  PING — wybudzanie backendu przez frontend
+app.get("/api/ping", (req, res) => {
+  res.status(200).send("pong");
 });
 
 // 🏁 Start serwera
